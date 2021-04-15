@@ -36,6 +36,19 @@ assert cf
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
 """
+def newCatalog():
+    """
+    Inicializa el catálogo de videos. Crea una lista vacia para guardar
+    todos los videos, adicionalmente, crea una lista vacia para las categorias. Retorna el catalogo inicializado.
+    """
+    catalog = {'RBT': None,
+                'dateIndex': None
+                }
+
+    catalog['videos'] = lt.newList('ARRAY_LIST', compareIds)
+    catalog['dateIndex'] = om.newMap(omaptype='RBT',
+                                      comparefunction=compareDates)
+    return catalog
 
 # Construccion de modelos
 
