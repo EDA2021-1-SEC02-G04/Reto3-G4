@@ -38,15 +38,16 @@ def init():
     return catalog
 # Funciones para la carga de datos
 def loadData(catalog):
-    loadCategorias(catalog)
-    loadVideos(catalog)
-    loadTrending(catalog)
+    loadEventos(catalog)
 
 def loadEventos(catalog):
     eventosfile = cf.data_dir + 'context_content_features-small.csv'
-    input_file = csv.DictReader(open(videosfile, encoding='utf-8'))
+    input_file = csv.DictReader(open(eventosfile, encoding='utf-8'))
     for evento in input_file:
         model.addEvento(catalog,evento)
+
+def rango_caracteristica(catalog,caracteristica,rango):
+    return model.rango_caracteristica(catalog,caracteristica,rango)
 
 # Funciones de ordenamiento
 

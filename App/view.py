@@ -67,16 +67,15 @@ while True:
         catalog = controller.init()
 
     elif int(inputs[0]) == 2:
-        print("\nCargando información de crimenes ....")
-        controller.loadData(catalog, crimefile)
-        print('Crimenes cargados: ' + str(controller.crimesSize(cont)))
-        print('Altura del arbol: ' + str(controller.indexHeight(cont)))
-        print('Elementos en el arbol: ' + str(controller.indexSize(cont)))
-        print('Menor Llave: ' + str(controller.minKey(cont)))
-        print('Mayor Llave: ' + str(controller.maxKey(cont)))
-
+        print("\nCargando información de eventos de escucha ....")
+        controller.loadData(catalog)
     elif int(inputs[0]) == 3:
-        pass
+        print("\nBuscando crimenes en un rango de fechas: ")
+        car = input("Ingrese la caracteristica de contenido: ")
+        rango =input("Ingrese el rango de la caracteristica: ")
+        resultado= controller.rango_caracteristica(catalog,car,rango)
+        print('Numero de elementos: ' + str(resultado[0]))
+        print('Altura del arbol: ' + str(resultado[1]))
     elif int(inputs[0]) == 4:
         pass
     elif int(inputs[0]) == 5:

@@ -37,19 +37,6 @@ assert cf
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
 """
-def newCatalog():
-    """
-    Inicializa el catálogo de videos. Crea una lista vacia para guardar
-    todos los videos, adicionalmente, crea una lista vacia para las categorias. Retorna el catalogo inicializado.
-    """
-    catalog = {'RBT': None,
-                'dateIndex': None
-                }
-
-    catalog['videos'] = lt.newList('ARRAY_LIST', compareIds)
-    catalog['dateIndex'] = om.newMap(omaptype='RBT',
-                                      comparefunction=compareDates)
-    return catalog
 
 # Construccion de modelos
 def newCatalog():
@@ -77,11 +64,29 @@ def crear_arboles(catalog):
     car_lista=catalog['caracteristicas_de_contenido']
     mapa=catalog['index_caracteristica']
     for caracteristica in lt.iterator(car_lista):
-        arbol=om.newMap(omaptype='BST',comparefunction=compare_car)
+        arbol=om.newMap(omaptype='RBT',comparefunction=compare_car)
         mp.put(mapa,caracteristica,arbol)
 
 def addEvento(catalog,evento):
-    
+    lt.addLast(catalog['eventos'], evento)
+    llenar_mapas(catalog, evento)
+    return catalog
+
+
+def llenar_mapas(catalog,evento):
+    mapa=catalog['index_caracteristica']
+    for caracteristica in lt.iterator(catalog['caracteristicas_de_contenido']):
+        x=mp.get(mapa,caracteristica)
+        valor=me.getValue(x)
+        om.put(valor, evento[caracteristica], evento)
+    return catalog
+
+def rango_caracteristica(catalog,caracteristica,rango):
+    map=mp.get(catalog['index_caracteristica'],caracteristica)
+    arbol=me.getValue(map)
+    tamaño=om.size(arbol)
+    altura=om.height(arbol)
+    return(tamaño,altura)
 # Funciones para creacion de datos
 
 # Funciones de consulta
