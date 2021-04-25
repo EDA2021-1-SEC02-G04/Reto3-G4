@@ -23,6 +23,7 @@
 import config as cf
 import model
 import csv
+from DISClib.ADT import list as lt
 
 
 """
@@ -39,6 +40,8 @@ def init():
 # Funciones para la carga de datos
 def loadData(catalog):
     loadEventos(catalog)
+    loadGeneros(catalog)
+    print(lt.size(catalog['eventos']))
 
 def loadEventos(catalog):
     eventosfile = cf.data_dir + 'context_content_features-small.csv'
@@ -46,9 +49,22 @@ def loadEventos(catalog):
     for evento in input_file:
         model.addEvento(catalog,evento)
 
-def rango_caracteristica(catalog,caracteristica,rango):
-    return model.rango_caracteristica(catalog,caracteristica,rango)
+def rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup):
+    return model.rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup)
 
+def loadGeneros(catalog):
+    model.new_genero(catalog,'reggae',60,90)
+    model.new_genero(catalog,'down-tempo',70,100)
+    model.new_genero(catalog,'chill-out',90,120)
+    model.new_genero(catalog,'hip-hop',85,115)
+    model.new_genero(catalog,'jazz and funk',120,125)
+    model.new_genero(catalog,'pop',100,130)
+    model.new_genero(catalog,'r&b',60,80)
+    model.new_genero(catalog,'rock',110,140)
+    model.new_genero(catalog,'metal',100,160)
+
+def nuevo_genero(catalog,genero,rango_inf,rango_sup):
+    model.new_genero(catalog,genero,rango_inf,rango_sup)
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo

@@ -48,8 +48,9 @@ def printMenu():
     print("3- Caracterizar canciones")
     print("4- Encontrar musica para festejar")
     print("5- Encontrar musica para estudiar")
-    print("6- Estimar las reproducciones de los generos musicales")
-    print("7- Indicar el genero musical más escuchado en un tiempo")
+    print("6- Crear nuevo genero")
+    print("7- Estimar las reproducciones de los generos musicales")
+    print("8- Indicar el genero musical más escuchado en un tiempo")
     print("0- Salir")
     print("*******************************************")
 
@@ -70,19 +71,29 @@ while True:
         print("\nCargando información de eventos de escucha ....")
         controller.loadData(catalog)
     elif int(inputs[0]) == 3:
-        print("\nBuscando crimenes en un rango de fechas: ")
-        car = input("Ingrese la caracteristica de contenido: ")
-        rango =input("Ingrese el rango de la caracteristica: ")
-        resultado= controller.rango_caracteristica(catalog,car,rango)
+        print("\nBuscando reprioducciónes por caracteristica: ")
+        car = input("Ingrese la caracteristica de contenido: ").lower()
+        rango_inf =input("Ingrese el limite inferior del rango de la caracteristica: ")
+        rango_sup =input("Ingrese el limite superior del rango de la caracteristica: ")
+        resultado= controller.rango_caracteristica(catalog,car,rango_inf,rango_sup)
         print('Numero de elementos: ' + str(resultado[0]))
         print('Altura del arbol: ' + str(resultado[1]))
+        print('Numero de reproducciones:'+ str(resultado[2]))
+        print('Cantidad de Autores:'+ str(resultado[3]))
     elif int(inputs[0]) == 4:
         pass
     elif int(inputs[0]) == 5:
         pass
     elif int(inputs[0]) == 6:
-        pass
+        print("\nCreando nuevo genero: ")
+        genero = input("Ingrese el nombre de su nuevo genero: ").lower()
+        rango_inf =input("Ingrese el limite inferior de BPM: ")
+        rango_sup =input("Ingrese el limite superior de BPM: ")
+        controller.nuevo_genero(catalog,genero,rango_inf,rango_sup)
+        print("Se creó su nuevo genero")
     elif int(inputs[0]) == 7:
+        pass
+    elif int(inputs[0]) == 8:
         pass
     else:
         sys.exit(0)

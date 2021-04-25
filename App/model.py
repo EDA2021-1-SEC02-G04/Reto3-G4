@@ -42,12 +42,14 @@ los mismos.
 def newCatalog():
     catalog = {'eventos': None,
                 'caracteristicas_de_contenido':None,
-                'index_caracteristica': None
+                'index_caracteristica': None,
+                'genero-rango':None
                 }
 
     catalog['eventos'] = lt.newList('SINGLE_LINKED')
     catalog['caracteristicas_de_contenido'] = lt.newList('SINGLE_LINKED')
     catalog['index_caracteristica'] = mp.newMap(20,maptype="PROBING",loadfactor=0.5)
+    catalog["genero-rango"]=mp.newMap(100,maptype="PROBING",loadfactor=0.5)
     return catalog
 # Funciones para agregar informacion al catalogo
 
@@ -69,26 +71,58 @@ def crear_arboles(catalog):
 
 def addEvento(catalog,evento):
     lt.addLast(catalog['eventos'], evento)
+    """
     llenar_mapas(catalog, evento)
+    """
     return catalog
 
 
 def llenar_mapas(catalog,evento):
     mapa=catalog['index_caracteristica']
     for caracteristica in lt.iterator(catalog['caracteristicas_de_contenido']):
+        caracteristica=caracteristica.strip('"')
         x=mp.get(mapa,caracteristica)
         valor=me.getValue(x)
         om.put(valor, evento[caracteristica], evento)
     return catalog
 
-def rango_caracteristica(catalog,caracteristica,rango):
+def llenar_mapa(catalog,caracteristica):
+    for evento in lt.iterator(catalog['eventos']):
+        mapa=catalog['index_caracteristica']
+        caracteristica=caracteristica.strip('"')
+        x=mp.get(mapa,caracteristica)
+        valor=me.getValue(x)
+        om.put(valor, evento[caracteristica], evento)
+    return catalog
+
+def rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup):
+    llenar_mapa(catalog,caracteristica)
     map=mp.get(catalog['index_caracteristica'],caracteristica)
     arbol=me.getValue(map)
+    valores_rango=om.values(arbol,rango_inf,rango_sup)
+    cantidad_eventos=lt.size(valores_rango)
+    lista_autores=autores_unicos(valores_rango)
+    autores=lt.size(lista_autores)
     tamaño=om.size(arbol)
     altura=om.height(arbol)
-    return(tamaño,altura)
-# Funciones para creacion de datos
+    return(tamaño,altura,cantidad_eventos,autores)
 
+def autores_unicos(lista):
+    lista_autores=lt.newList(datastructure='ARRAY_LIST')
+    for evento in lt.iterator(lista):
+        if lt.isPresent(lista_autores,evento['artist_id']):
+            None
+        else:
+            lt.addLast(lista_autores,evento['artist_id'])
+    return lista_autores
+# Funciones para creacion de datos
+def cambiar_genero_rango(genero):
+    x=mp.get(catalog['genero-rango'],genero)
+    return me.getValue(x)
+
+def new_genero(catalog,genero,rango_inf,rango_sup):
+    rango=(rango_inf,rango_sup)
+    mp.put(catalog['genero-rango'],genero,rango)
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
