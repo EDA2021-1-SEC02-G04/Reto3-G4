@@ -41,6 +41,7 @@ def init():
 def loadData(catalog):
     loadEventos(catalog)
     loadGeneros(catalog)
+    model.llenar_mapa(catalog,'tempo')
     print(lt.size(catalog['eventos']))
 
 def loadEventos(catalog):
@@ -65,6 +66,11 @@ def loadGeneros(catalog):
 
 def nuevo_genero(catalog,genero,rango_inf,rango_sup):
     model.new_genero(catalog,genero,rango_inf,rango_sup)
+
+def total_por_generos(catalog,lista_gen):
+    lista_gen2=lista_gen.split(',')
+    return model.total_por_generos(catalog,lista_gen2)
+
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo

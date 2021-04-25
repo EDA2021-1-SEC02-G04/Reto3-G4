@@ -92,7 +92,7 @@ def llenar_mapa(catalog,caracteristica):
         caracteristica=caracteristica.strip('"')
         x=mp.get(mapa,caracteristica)
         valor=me.getValue(x)
-        om.put(valor, evento[caracteristica], evento)
+        om.put(valor, float(evento[caracteristica]), evento)
     return catalog
 
 def rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup):
@@ -116,7 +116,7 @@ def autores_unicos(lista):
             lt.addLast(lista_autores,evento['artist_id'])
     return lista_autores
 # Funciones para creacion de datos
-def cambiar_genero_rango(genero):
+def cambiar_genero_rango(catalog,genero):
     x=mp.get(catalog['genero-rango'],genero)
     return me.getValue(x)
 
@@ -124,7 +124,24 @@ def new_genero(catalog,genero,rango_inf,rango_sup):
     rango=(rango_inf,rango_sup)
     mp.put(catalog['genero-rango'],genero,rango)
 # Funciones de consulta
+def buscar_por_genero(catalog,genero):
+    rango=cambiar_genero_rango(catalog,genero)
+    map=mp.get(catalog['index_caracteristica'],'tempo')
+    arbol=me.getValue(map)
+    valores_rango=om.values(arbol,float(rango[0]),float(rango[1]))
+    total=lt.size(valores_rango)
+    artistas=autores_unicos(valores_rango)
+    numero_artistas=lt.size(artistas)
+    return(total,artistas,numero_artistas,genero,rango)
 
+def total_por_generos(catalog,lista_gen):
+    total=0
+    ltrespuesta=lt.newList(datastructure='ARRAY_LIST')
+    for genero in lista_gen:
+        respuesta=buscar_por_genero(catalog,genero)
+        total+=respuesta[0]
+        lt.addLast(ltrespuesta,respuesta)
+    return (total,ltrespuesta)
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento

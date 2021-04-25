@@ -54,7 +54,19 @@ def printMenu():
     print("0- Salir")
     print("*******************************************")
 
-
+def print_generos(respuesta):
+    lista=respuesta[1]
+    for res in lt.iterator(lista):
+        print('\n======'+res[3]+'======')
+        print('Para '+str(res[3])+' el rango esta entre '+str(res[4][0])+' y '+str(res[4][1]))
+        print('Reproducciones totales de '+ str(res[3])+': '+str(res[0]))
+        print('Numero total de artistas: '+str(res[2]))
+        print('------Artistas de '+str(res[3])+'------')
+        artistas=res[1]
+        i=1
+        while i <= 10:
+            print('Artista '+str(i)+': '+str(lt.getElement(artistas,i)))
+            i+=1
 """
 Menu principal
 """
@@ -92,7 +104,11 @@ while True:
         controller.nuevo_genero(catalog,genero,rango_inf,rango_sup)
         print("Se creó su nuevo genero")
     elif int(inputs[0]) == 7:
-        pass
+        print("\nBuscando por genero: ")
+        generos = input("Ingrese los generos separados por ,: ").lower()
+        resultado=controller.total_por_generos(catalog,generos)
+        print("Total de reproducciónes:" +str(resultado[0]))
+        print_generos(resultado)
     elif int(inputs[0]) == 8:
         pass
     else:
