@@ -108,13 +108,13 @@ def rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup):
     return(tamaño,altura,cantidad_eventos,autores)
 
 def autores_unicos(lista):
-    lista_autores=lt.newList(datastructure='ARRAY_LIST')
+    map_autores=mp.newMap(numelements=5000,maptype='PROBING',loadfactor=0.5)
     for evento in lt.iterator(lista):
-        if lt.isPresent(lista_autores,evento['artist_id']):
+        if mp.contains(map_autores,evento['artist_id']):
             None
         else:
-            lt.addLast(lista_autores,evento['artist_id'])
-    return lista_autores
+            mp.put(map_autores,evento['artist_id'],evento['artist_id'])
+    return map_autores
 # Funciones para creacion de datos
 def cambiar_genero_rango(catalog,genero):
     x=mp.get(catalog['genero-rango'],genero)
@@ -130,7 +130,7 @@ def buscar_por_genero(catalog,genero):
     arbol=me.getValue(map)
     valores_rango=om.values(arbol,float(rango[0]),float(rango[1]))
     total=lt.size(valores_rango)
-    artistas=autores_unicos(valores_rango)
+    artistas=mp.keySet(autores_unicos(valores_rango))
     numero_artistas=lt.size(artistas)
     return(total,artistas,numero_artistas,genero,rango)
 

@@ -64,7 +64,7 @@ def print_generos(respuesta):
         print('------Artistas de '+str(res[3])+'------')
         artistas=res[1]
         i=1
-        while i <= 10:
+        while i <= 10 and i<lt.size(artistas):
             print('Artista '+str(i)+': '+str(lt.getElement(artistas,i)))
             i+=1
 """
@@ -85,8 +85,8 @@ while True:
     elif int(inputs[0]) == 3:
         print("\nBuscando reprioducciónes por caracteristica: ")
         car = input("Ingrese la caracteristica de contenido: ").lower()
-        rango_inf =input("Ingrese el limite inferior del rango de la caracteristica: ")
-        rango_sup =input("Ingrese el limite superior del rango de la caracteristica: ")
+        rango_inf =float(input("Ingrese el limite inferior del rango de la caracteristica: "))
+        rango_sup =float(input("Ingrese el limite superior del rango de la caracteristica: "))
         resultado= controller.rango_caracteristica(catalog,car,rango_inf,rango_sup)
         print('Numero de elementos: ' + str(resultado[0]))
         print('Altura del arbol: ' + str(resultado[1]))
@@ -99,8 +99,8 @@ while True:
     elif int(inputs[0]) == 6:
         print("\nCreando nuevo genero: ")
         genero = input("Ingrese el nombre de su nuevo genero: ").lower()
-        rango_inf =input("Ingrese el limite inferior de BPM: ")
-        rango_sup =input("Ingrese el limite superior de BPM: ")
+        rango_inf =float(input("Ingrese el limite inferior de BPM: "))
+        rango_sup =float(input("Ingrese el limite superior de BPM: "))
         controller.nuevo_genero(catalog,genero,rango_inf,rango_sup)
         print("Se creó su nuevo genero")
     elif int(inputs[0]) == 7:
