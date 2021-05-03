@@ -71,9 +71,7 @@ def crear_arboles(catalog):
 
 def addEvento(catalog,evento):
     lt.addLast(catalog['eventos'], evento)
-    """
     llenar_mapas(catalog, evento)
-    """
     return catalog
 
 
@@ -83,7 +81,7 @@ def llenar_mapas(catalog,evento):
         caracteristica=caracteristica.strip('"')
         x=mp.get(mapa,caracteristica)
         valor=me.getValue(x)
-        om.put(valor, evento[caracteristica], evento)
+        om.put(valor, float(evento[caracteristica]), evento)
     return catalog
 
 def llenar_mapa(catalog,caracteristica):
@@ -96,7 +94,6 @@ def llenar_mapa(catalog,caracteristica):
     return catalog
 
 def rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup):
-    llenar_mapa(catalog,caracteristica)
     map=mp.get(catalog['index_caracteristica'],caracteristica)
     arbol=me.getValue(map)
     valores_rango=om.values(arbol,rango_inf,rango_sup)
@@ -142,13 +139,30 @@ def total_por_generos(catalog,lista_gen):
         total+=respuesta[0]
         lt.addLast(ltrespuesta,respuesta)
     return (total,ltrespuesta)
+
+def musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup):
+    map_inst=mp.get(catalog['index_caracteristica'],'instrumentalness')
+    map_BPM=mp.get(catalog['index_caracteristica'],'tempo')
+    arbol_inst=me.getValue(map_inst)
+    arbol_BPM=me.getValue(map_BPM)
+    valores_inst=om.values(arbol_inst,inst_inf,inst_sup)
+    valores_BPM=om.values(arbol_BPM,BPM_inf,BPM_sup)
+    map_inst=lista_en_hash(valores_inst)
+    lista_musica=lt.newList('ARRAY_LIST')
+    for evento in lt.iterator(valores_BPM):
+        if mp.contains(map_inst,evento):
+            lt.addLast(lista_musica,evento)
+    return lista_musica
+
+def lista_en_hash(lista):
+    mapa=mp.newMap(2*lt.size(lista),maptype="PROBING",loadfactor=0.5)
+    for evento in lt.iterator(lista):
+        mp.put(mapa,evento['track_id'],evento)
+    return map
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
 def compare_car(car1, car2):
-    """
-    Compara dos fechas
-    """
     if (car1 == car2):
         return 0
     elif (car1 > car2):

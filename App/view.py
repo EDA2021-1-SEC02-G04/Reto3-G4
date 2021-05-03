@@ -95,7 +95,12 @@ while True:
     elif int(inputs[0]) == 4:
         pass
     elif int(inputs[0]) == 5:
-        pass
+        print("\nBuscando musica para estudiar: ")
+        inst_inf =float(input("Ingrese el limite inferior de Instrumentalness: "))
+        inst_sup =float(input("Ingrese el limite superior de Instrumentalness: "))
+        BPM_inf =float(input("Ingrese el limite inferior de BPM: "))
+        BPM_sup =float(input("Ingrese el limite superior de BPM: "))
+        answer=controller.musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup)
     elif int(inputs[0]) == 6:
         print("\nCreando nuevo genero: ")
         genero = input("Ingrese el nombre de su nuevo genero: ").lower()

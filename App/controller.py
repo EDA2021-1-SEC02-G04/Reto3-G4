@@ -41,7 +41,6 @@ def init():
 def loadData(catalog):
     loadEventos(catalog)
     loadGeneros(catalog)
-    model.llenar_mapa(catalog,'tempo')
     print(lt.size(catalog['eventos']))
 
 def loadEventos(catalog):
@@ -74,3 +73,5 @@ def total_por_generos(catalog,lista_gen):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup):
+    model.musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup)
