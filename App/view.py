@@ -43,7 +43,7 @@ def printMenu():
     print("\n")
     print("*******************************************")
     print("Bienvenido")
-    print("1- Inicializar Analizador")
+    print("1- Inicializar catalogo")
     print("2- Cargar información de canciones")
     print("3- Caracterizar canciones")
     print("4- Encontrar musica para festejar")
@@ -128,7 +128,12 @@ while True:
         print("Total de reproducciónes:" +str(resultado[0]))
         print_generos(resultado)
     elif int(inputs[0]) == 8:
-        pass
+        print("\nBuscando por hora: ")
+        tmin = int(input("Ingrese el tiempo inicial: "))
+        tmax=  int(input("Ingrese el tiempo final: "))
+        resultado=controller.analisis_por_hora(catalog,tmin,tmax)
+        print("Total de reproducciónes:" +str(resultado[0]))
+        print_generos(resultado)
     else:
         sys.exit(0)
 sys.exit(0)

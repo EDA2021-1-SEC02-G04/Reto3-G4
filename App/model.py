@@ -31,6 +31,7 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.ADT import orderedmap as om
+import datetime
 assert cf
 
 
@@ -54,7 +55,7 @@ def newCatalog():
 
 def anadir_caracteristicas(catalog):
     lista=catalog['caracteristicas_de_contenido']
-    caracteristicas="instrumentalness,liveness,speechiness,danceability,valence,loudness,tempo,acousticness,energy,mode,key"
+    caracteristicas="instrumentalness,liveness,speechiness,danceability,valence,loudness,tempo,acousticness,energy,mode,key,created_at"
     lista_car=caracteristicas.split(',')
     for caracteristica in lista_car:
         lt.addLast(lista,caracteristica)
@@ -68,7 +69,9 @@ def crear_arboles(catalog):
         mp.put(mapa,caracteristica,arbol)
 
 def addEvento(catalog,evento):
-    tupla=(evento['track_id'],evento['user_id'],evento['created_at'])
+    tiempo=datetime.datetime.strptime(evento['created_at'], '%Y-%m-%d %H:%M:%S')
+    tupla=(evento['track_id'],evento['user_id'],tiempo)
+    evento['created_at']=tiempo
     if mp.contains(catalog['eventos'], tupla):
         pass
     else:
@@ -76,7 +79,9 @@ def addEvento(catalog,evento):
     return catalog
 
 def hastags(catalog,evento):
-    tupla=(evento['track_id'],evento['user_id'],evento['created_at'])
+    tiempo=datetime.datetime.strptime(evento['created_at'], '%Y-%m-%d %H:%M:%S')
+    tupla=(evento['track_id'],evento['user_id'],tiempo)
+    evento['created_at']=tiempo
     if mp.contains(catalog['eventos'], tupla):
         aguacate=mp.get(catalog['eventos'], tupla)
         evento_map=me.getValue(aguacate)
@@ -100,7 +105,12 @@ def llenar_mapas(catalog,evento):
         x=mp.get(mapa,caracteristica)
         valor=me.getValue(x)
         if evento.get(caracteristica) != None:
-            om.put(valor, float(evento[caracteristica]), evento)
+            if caracteristica=='created_at':
+                tiempo=evento['created_at']
+                hora=tiempo.time()
+                om.put(valor, hora, evento)
+            else:             
+                om.put(valor, float(evento[caracteristica]), evento)
     return catalog
 
 def llenar_mapa(catalog,caracteristica):
@@ -192,6 +202,12 @@ def lista_en_hash(lista):
     for evento in lt.iterator(lista):
         mp.put(mapa,evento['track_id'],evento)
     return mapa
+
+def analisis_por_hora(catalog,tmin,tmax):
+    map_hora=mp.get(catalog['index_caracteristica'],'created_at')
+    arbol_hora=me.getValue(map_hora)
+    eventos_rango=om.values(arbol_hora, tmin, tmax)
+    
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
