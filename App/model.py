@@ -33,10 +33,6 @@ from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.ADT import orderedmap as om
 assert cf
 
-"""
-Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
-los mismos.
-"""
 
 # Construccion de modelos
 def newCatalog():
@@ -46,7 +42,7 @@ def newCatalog():
                 'genero-rango':None
                 }
 
-    catalog['eventos'] = lt.newList('SINGLE_LINKED')
+    catalog['eventos'] = mp.newMap(100000,maptype="PROBING",loadfactor=0.5)
     catalog['caracteristicas_de_contenido'] = lt.newList('SINGLE_LINKED')
     catalog['index_caracteristica'] = mp.newMap(20,maptype="PROBING",loadfactor=0.5)
     catalog["genero-rango"]=mp.newMap(100,maptype="PROBING",loadfactor=0.5)
@@ -70,9 +66,25 @@ def crear_arboles(catalog):
         mp.put(mapa,caracteristica,arbol)
 
 def addEvento(catalog,evento):
-    lt.addLast(catalog['eventos'], evento)
-    llenar_mapas(catalog, evento)
+    tupla=(evento['track_id'],evento['user_id'],evento['created_at'])
+    if mp.contains(catalog['eventos'], tupla):
+        pass
+    else:
+        mp.put(catalog['eventos'],tupla, evento)
     return catalog
+
+def hastags(catalog,evento):
+    tupla=(evento['track_id'],evento['user_id'],evento['created_at'])
+    if mp.contains(catalog['eventos'], tupla):
+        aguacate=mp.get(catalog['eventos'], tupla)
+        evento_map=me.getValue(aguacate)
+        evento_map['hashtag']=evento['hashtag']
+        mp.remove(catalog['eventos'], tupla),
+        mp.put(catalog['eventos'], tupla, evento_map)
+    else:
+        mp.put(catalog['eventos'],tupla, evento)
+    return catalog
+
 
 
 def llenar_mapas(catalog,evento):
@@ -112,6 +124,15 @@ def autores_unicos(lista):
         else:
             mp.put(map_autores,evento['artist_id'],evento['artist_id'])
     return map_autores
+
+def pistas_unicas(lista):
+    map_pistas=mp.newMap(numelements=2*lt.size(lista),maptype='PROBING',loadfactor=0.5)
+    for evento in lt.iterator(lista):
+        if mp.contains(map_pistas,evento['track_id']):
+            None
+        else:
+            mp.put(map_pistas,evento['track_id'],evento)
+    return map_pistas
 # Funciones para creacion de datos
 def cambiar_genero_rango(catalog,genero):
     x=mp.get(catalog['genero-rango'],genero)
@@ -147,18 +168,19 @@ def musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup):
     arbol_BPM=me.getValue(map_BPM)
     valores_inst=om.values(arbol_inst,inst_inf,inst_sup)
     valores_BPM=om.values(arbol_BPM,BPM_inf,BPM_sup)
-    map_inst=lista_en_hash(valores_inst)
+    mapa_inst=lista_en_hash(valores_inst)
     lista_musica=lt.newList('ARRAY_LIST')
     for evento in lt.iterator(valores_BPM):
-        if mp.contains(map_inst,evento):
+        if mp.contains(mapa_inst,evento['track_id']):
             lt.addLast(lista_musica,evento)
-    return lista_musica
+    lista_unica=mp.valueSet(pistas_unicas(lista_musica))
+    return lista_unica
 
 def lista_en_hash(lista):
     mapa=mp.newMap(2*lt.size(lista),maptype="PROBING",loadfactor=0.5)
     for evento in lt.iterator(lista):
         mp.put(mapa,evento['track_id'],evento)
-    return map
+    return mapa
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento

@@ -24,6 +24,7 @@ import config as cf
 import model
 import csv
 from DISClib.ADT import list as lt
+from DISClib.ADT import map as mp
 
 
 """
@@ -41,13 +42,17 @@ def init():
 def loadData(catalog):
     loadEventos(catalog)
     loadGeneros(catalog)
-    print(lt.size(catalog['eventos']))
+    print(mp.size(catalog['eventos']))
 
 def loadEventos(catalog):
     eventosfile = cf.data_dir + 'context_content_features-small.csv'
-    input_file = csv.DictReader(open(eventosfile, encoding='utf-8'))
-    for evento in input_file:
+    input_file_eventos = csv.DictReader(open(eventosfile, encoding='utf-8'))
+    for evento in input_file_eventos:
         model.addEvento(catalog,evento)
+    hastagfile = cf.data_dir + 'user_track_hashtag_timestamp-small.csv'
+    input_file_hashtag = csv.DictReader(open(hastagfile, encoding='utf-8'))
+    for evento in input_file_hashtag:
+        model.hastags(catalog,evento)
 
 def rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup):
     return model.rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup)
@@ -74,4 +79,4 @@ def total_por_generos(catalog,lista_gen):
 
 # Funciones de consulta sobre el catálogo
 def musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup):
-    model.musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup)
+    return model.musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup)

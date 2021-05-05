@@ -25,7 +25,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
-
+import random
 
 """
 La vista se encarga de la interacción con el usuario
@@ -64,9 +64,19 @@ def print_generos(respuesta):
         print('------Artistas de '+str(res[3])+'------')
         artistas=res[1]
         i=1
-        while i <= 10 and i<lt.size(artistas):
+        while i <= 10 and i<=lt.size(artistas):
             print('Artista '+str(i)+': '+str(lt.getElement(artistas,i)))
             i+=1
+def print_estudiar(respuesta):
+    total=lt.size(respuesta)
+    print('En total hay: '+str(total)+' pistas unicas con las caracteristicas ingresadas')
+    print('------Pistas únicas------')
+    i=1
+    while i<=5 and i<=lt.size(respuesta):
+        numero_pista=random.randint(1, lt.size(respuesta))
+        pista=lt.getElement(respuesta,numero_pista)
+        print('Pista '+str(i)+': '+ str(pista['track_id'])+' con instrumentalidad '+str(pista['instrumentalness'])+' y tempo '+str(pista['tempo']))
+        i+=1
 """
 Menu principal
 """
@@ -101,6 +111,9 @@ while True:
         BPM_inf =float(input("Ingrese el limite inferior de BPM: "))
         BPM_sup =float(input("Ingrese el limite superior de BPM: "))
         answer=controller.musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup)
+        print('La instrumentalidad está entre: ' +str(inst_inf)+' y '+str(inst_sup))
+        print('El tempo está entre: ' +str(BPM_inf)+' y '+str(BPM_sup))
+        print_estudiar(answer)
     elif int(inputs[0]) == 6:
         print("\nCreando nuevo genero: ")
         genero = input("Ingrese el nombre de su nuevo genero: ").lower()
