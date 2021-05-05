@@ -42,6 +42,8 @@ def init():
 def loadData(catalog):
     loadEventos(catalog)
     loadGeneros(catalog)
+    loadHashtag(catalog)
+    model.llenar_arboles(catalog)
     print(mp.size(catalog['eventos']))
 
 def loadEventos(catalog):
@@ -53,6 +55,11 @@ def loadEventos(catalog):
     input_file_hashtag = csv.DictReader(open(hastagfile, encoding='utf-8'))
     for evento in input_file_hashtag:
         model.hastags(catalog,evento)
+def loadHashtag(catalog):
+    hashtagfile = cf.data_dir + 'sentiment_values.csv'
+    input_file = csv.DictReader(open(hashtagfile, encoding='utf-8'))
+    for hashtag in input_file:
+        model.poner_vader(catalog,hashtag)
 
 def rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup):
     return model.rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup)

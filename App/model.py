@@ -39,13 +39,15 @@ def newCatalog():
     catalog = {'eventos': None,
                 'caracteristicas_de_contenido':None,
                 'index_caracteristica': None,
-                'genero-rango':None
+                'genero-rango':None,
+                'vader_promedio':None
                 }
 
     catalog['eventos'] = mp.newMap(100000,maptype="PROBING",loadfactor=0.5)
     catalog['caracteristicas_de_contenido'] = lt.newList('SINGLE_LINKED')
     catalog['index_caracteristica'] = mp.newMap(20,maptype="PROBING",loadfactor=0.5)
     catalog["genero-rango"]=mp.newMap(100,maptype="PROBING",loadfactor=0.5)
+    catalog["vader_promedio"]=mp.newMap(10000,maptype="PROBING",loadfactor=0.5)
     return catalog
 # Funciones para agregar informacion al catalogo
 
@@ -85,7 +87,11 @@ def hastags(catalog,evento):
         mp.put(catalog['eventos'],tupla, evento)
     return catalog
 
-
+def llenar_arboles(catalog):
+    valores=mp.valueSet(catalog['eventos'])
+    for evento in lt.iterator(valores):
+        llenar_mapas(catalog,evento)
+    return catalog
 
 def llenar_mapas(catalog,evento):
     mapa=catalog['index_caracteristica']
@@ -93,7 +99,8 @@ def llenar_mapas(catalog,evento):
         caracteristica=caracteristica.strip('"')
         x=mp.get(mapa,caracteristica)
         valor=me.getValue(x)
-        om.put(valor, float(evento[caracteristica]), evento)
+        if evento.get(caracteristica) != None:
+            om.put(valor, float(evento[caracteristica]), evento)
     return catalog
 
 def llenar_mapa(catalog,caracteristica):
@@ -102,8 +109,12 @@ def llenar_mapa(catalog,caracteristica):
         caracteristica=caracteristica.strip('"')
         x=mp.get(mapa,caracteristica)
         valor=me.getValue(x)
-        om.put(valor, float(evento[caracteristica]), evento)
+        if evento.get(caracteristica) != None:
+            om.put(valor, float(evento[caracteristica]), evento)
     return catalog
+
+def poner_vader(catalog,hashtag):
+    mp.put(catalog['vader_promedio'],hashtag['hashtag'],hashtag['vader_avg'])
 
 def rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup):
     map=mp.get(catalog['index_caracteristica'],caracteristica)
