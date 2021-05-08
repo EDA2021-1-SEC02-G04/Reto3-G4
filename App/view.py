@@ -129,11 +129,9 @@ while True:
         print_generos(resultado)
     elif int(inputs[0]) == 8:
         print("\nBuscando por hora: ")
-        tmin = int(input("Ingrese el tiempo inicial: "))
-        tmax=  int(input("Ingrese el tiempo final: "))
+        tmin = input("Ingrese el tiempo inicial: ")
+        tmax=  input("Ingrese el tiempo final: ")
         resultado=controller.analisis_por_hora(catalog,tmin,tmax)
-        print("Total de reproducciónes:" +str(resultado[0]))
-        print_generos(resultado)
     else:
         sys.exit(0)
 sys.exit(0)

@@ -45,7 +45,7 @@ def newCatalog():
                 }
 
     catalog['eventos'] = mp.newMap(100000,maptype="PROBING",loadfactor=0.5)
-    catalog['caracteristicas_de_contenido'] = lt.newList('SINGLE_LINKED')
+    catalog['caracteristicas_de_contenido'] = lt.newList(datastructure='SINGLE_LINKED')
     catalog['index_caracteristica'] = mp.newMap(20,maptype="PROBING",loadfactor=0.5)
     catalog["genero-rango"]=mp.newMap(100,maptype="PROBING",loadfactor=0.5)
     catalog["vader_promedio"]=mp.newMap(10000,maptype="PROBING",loadfactor=0.5)
@@ -72,6 +72,7 @@ def addEvento(catalog,evento):
     tiempo=datetime.datetime.strptime(evento['created_at'], '%Y-%m-%d %H:%M:%S')
     tupla=(evento['track_id'],evento['user_id'],tiempo)
     evento['created_at']=tiempo
+    evento['hashtag']=lt.newList(datastructure='SINGLE_LINKED')
     if mp.contains(catalog['eventos'], tupla):
         pass
     else:
@@ -85,10 +86,13 @@ def hastags(catalog,evento):
     if mp.contains(catalog['eventos'], tupla):
         aguacate=mp.get(catalog['eventos'], tupla)
         evento_map=me.getValue(aguacate)
-        evento_map['hashtag']=evento['hashtag']
+        lt.addLast(evento_map['hashtag'], evento['hashtag'])
         mp.remove(catalog['eventos'], tupla),
         mp.put(catalog['eventos'], tupla, evento_map)
     else:
+        hashtag=evento['hashtag']
+        evento['hashtag']=lt.newList(datastructure='SINGLE_LINKED')
+        lt.addLast(evento['hashtag'], hashtag)
         mp.put(catalog['eventos'],tupla, evento)
     return catalog
 
@@ -113,15 +117,12 @@ def llenar_mapas(catalog,evento):
                 om.put(valor, float(evento[caracteristica]), evento)
     return catalog
 
-def llenar_mapa(catalog,caracteristica):
-    for evento in lt.iterator(catalog['eventos']):
-        mapa=catalog['index_caracteristica']
-        caracteristica=caracteristica.strip('"')
-        x=mp.get(mapa,caracteristica)
-        valor=me.getValue(x)
-        if evento.get(caracteristica) != None:
-            om.put(valor, float(evento[caracteristica]), evento)
-    return catalog
+def llenar_mapa_tempo(lista):
+    arbol=om.newMap(omaptype='RBT',comparefunction=compare_car)
+    for evento in lt.iterator(lista):
+        if evento.get('tempo') != None:
+            om.put(arbol,float(evento['tempo']), evento)
+    return arbol
 
 def poner_vader(catalog,hashtag):
     mp.put(catalog['vader_promedio'],hashtag['hashtag'],hashtag['vader_avg'])
@@ -203,10 +204,39 @@ def lista_en_hash(lista):
         mp.put(mapa,evento['track_id'],evento)
     return mapa
 
+def promedio_vader(catalog,lista):
+    total=0
+    for evento in lt.iterator(lista):
+        for hashtag in lt.iterator(evento['hashtag']):
+            pareja=mp.get(catalog['vader_promedio'], hashtag)
+            if pareja != None:
+                vader=me.getValue(pareja)
+                if vader!= '':
+                    total+=float(vader)
+    promedio=total/lt.size(lista)
+    return promedio
+
 def analisis_por_hora(catalog,tmin,tmax):
+    mindate=datetime.datetime.strptime(tmin, '%H:%M:%S')
+    maxdate=datetime.datetime.strptime(tmax, '%H:%M:%S')
+    mintime=mindate.time()
+    maxtime=maxdate.time()
     map_hora=mp.get(catalog['index_caracteristica'],'created_at')
     arbol_hora=me.getValue(map_hora)
-    eventos_rango=om.values(arbol_hora, tmin, tmax)
+    eventos_rango=om.values(arbol_hora, mintime, maxtime)
+    arbol=llenar_mapa_tempo(eventos_rango)
+    genero_mas=None
+    genero_nombre=None
+    tamaño_genero=0
+    for genero in lt.iterator(mp.keySet(catalog['genero-rango'])):
+        rango=cambiar_genero_rango(catalog,genero)
+        valores_rango=om.values(arbol,float(rango[0]),float(rango[1]))
+        total=lt.size(valores_rango)
+        if total>tamaño_genero:
+            tamaño_genero=total
+            genero_mas=valores_rango
+            genero_nombre=genero
+    promedio=promedio_vader(catalog,genero_mas)
     
 # Funciones utilizadas para comparar elementos dentro de una lista
 
