@@ -150,11 +150,13 @@ def autores_unicos(lista):
 def pistas_unicas(lista):
     map_pistas=mp.newMap(numelements=2*lt.size(lista),maptype='PROBING',loadfactor=0.5)
     for evento in lt.iterator(lista):
-        if mp.contains(map_pistas,evento['track_id']):
+        tupla=(evento['track_id'],evento['user_id'],evento['created_at'])
+        if mp.contains(map_pistas,tupla):
             None
         else:
-            mp.put(map_pistas,evento['track_id'],evento)
+            mp.put(map_pistas,tupla,evento)
     return map_pistas
+
 # Funciones para creacion de datos
 def cambiar_genero_rango(catalog,genero):
     x=mp.get(catalog['genero-rango'],genero)
@@ -205,16 +207,17 @@ def lista_en_hash(lista):
     return mapa
 
 def promedio_vader(catalog,lista):
-    total=0
     for evento in lt.iterator(lista):
+        total=0
         for hashtag in lt.iterator(evento['hashtag']):
             pareja=mp.get(catalog['vader_promedio'], hashtag)
             if pareja != None:
                 vader=me.getValue(pareja)
                 if vader!= '':
                     total+=float(vader)
-    promedio=total/lt.size(lista)
-    return promedio
+        promedio=total/lt.size(evento['hashtag'])
+        evento['vader']=promedio
+    return lista
 
 def analisis_por_hora(catalog,tmin,tmax):
     mindate=datetime.datetime.strptime(tmin, '%H:%M:%S')
@@ -224,19 +227,25 @@ def analisis_por_hora(catalog,tmin,tmax):
     map_hora=mp.get(catalog['index_caracteristica'],'created_at')
     arbol_hora=me.getValue(map_hora)
     eventos_rango=om.values(arbol_hora, mintime, maxtime)
+    total_rep=lt.size(eventos_rango)
     arbol=llenar_mapa_tempo(eventos_rango)
     genero_mas=None
     genero_nombre=None
     tamaño_genero=0
+    lista_generos=lt.newList(datastructure='ARRAY_LIST')
     for genero in lt.iterator(mp.keySet(catalog['genero-rango'])):
         rango=cambiar_genero_rango(catalog,genero)
         valores_rango=om.values(arbol,float(rango[0]),float(rango[1]))
         total=lt.size(valores_rango)
-        if total>tamaño_genero:
-            tamaño_genero=total
-            genero_mas=valores_rango
-            genero_nombre=genero
-    promedio=promedio_vader(catalog,genero_mas)
+        tupla=(genero,valores_rango,total)
+        lt.addLast(lista_generos, tupla)
+    ordenada_por_genero=sa.sort(lista_generos, cmpgeneros)
+    genero_mas=lt.getElement(ordenada_por_genero, 1)
+    promedio=promedio_vader(catalog,genero_mas[1])
+    lista_unica=mp.valueSet(pistas_unicas(promedio))
+    ordenada_hashtag=sa.sort(lista_unica, cmphashtags)
+    return (ordenada_por_genero,genero_mas,promedio,ordenada_hashtag,total_rep)
+
     
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -248,3 +257,17 @@ def compare_car(car1, car2):
         return 1
     else:
         return -1
+
+def cmpgeneros(gen1, gen2):
+    
+    if (gen1[2] > gen2[2]):
+        return True
+    else:
+        return False
+
+def cmphashtags(ev1, ev2):
+    
+    if (lt.size(ev1['hashtag']) > lt.size(ev2['hashtag'])):
+        return True
+    else:
+        return False

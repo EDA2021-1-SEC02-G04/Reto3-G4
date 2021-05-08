@@ -77,6 +77,23 @@ def print_estudiar(respuesta):
         pista=lt.getElement(respuesta,numero_pista)
         print('Pista '+str(i)+': '+ str(pista['track_id'])+' con instrumentalidad '+str(pista['instrumentalness'])+' y tempo '+str(pista['tempo']))
         i+=1
+
+def print_horas(respuesta,tmin,tmax):
+    print('En total hay: '+str(respuesta[4])+' reproducciones entre '+str(tmin)+' y '+str(tmax))
+    print('\n============ GENEROS SORTEADOS POR REPRODUCCIONES ============')
+    i=1
+    for genero in lt.iterator(respuesta[0]):
+        print('TOP '+ str(i)+':'+ str(genero[0])+' con '+ str(genero[2])+' reproducciones')
+        i+=1
+    print('El genero más escuchado es: '+ str(respuesta[1][0]) +' con '+ str(respuesta[1][2])+ ' reproducciones')
+    print('\n============ ANALISIS DE SENTIMIENTOS DE ' + str(respuesta[1][0]) + ' ============')
+    print(str(respuesta[1][0])+' tiene '+ str(lt.size(respuesta[3]))+ ' tracks unicos')
+    print('Los primeros 10 tracks son:')
+    tracks=respuesta[3]
+    j=1
+    while j <= 10 and i<=lt.size(respuesta[3]):
+        print('TOP '+ str(j)+' track:'+ str(lt.getElement(tracks, j)['track_id'])+ ' con '+ str(lt.size(lt.getElement(tracks, j)['hashtag'])) + ' hashtags y VADER '+str(lt.getElement(tracks, j)['vader']))
+        j+=1
 """
 Menu principal
 """
@@ -98,8 +115,6 @@ while True:
         rango_inf =float(input("Ingrese el limite inferior del rango de la caracteristica: "))
         rango_sup =float(input("Ingrese el limite superior del rango de la caracteristica: "))
         resultado= controller.rango_caracteristica(catalog,car,rango_inf,rango_sup)
-        print('Numero de elementos: ' + str(resultado[0]))
-        print('Altura del arbol: ' + str(resultado[1]))
         print('Numero de reproducciones:'+ str(resultado[2]))
         print('Cantidad de Autores:'+ str(resultado[3]))
     elif int(inputs[0]) == 4:
@@ -132,6 +147,7 @@ while True:
         tmin = input("Ingrese el tiempo inicial: ")
         tmax=  input("Ingrese el tiempo final: ")
         resultado=controller.analisis_por_hora(catalog,tmin,tmax)
+        print_horas(resultado,tmin,tmax)
     else:
         sys.exit(0)
 sys.exit(0)
