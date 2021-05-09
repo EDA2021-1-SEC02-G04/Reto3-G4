@@ -88,5 +88,9 @@ def total_por_generos(catalog,lista_gen):
 def musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup):
     return model.musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup)
 
+def musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup):
+    return model.musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup)
+
+
 def analisis_por_hora(catalog,tmin,tmax):
     return model.analisis_por_hora(catalog,tmin,tmax)

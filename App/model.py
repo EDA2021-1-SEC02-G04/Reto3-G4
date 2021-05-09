@@ -185,6 +185,21 @@ def total_por_generos(catalog,lista_gen):
         lt.addLast(ltrespuesta,respuesta)
     return (total,ltrespuesta)
 
+def musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup):
+    map_dance=mp.get(catalog['index_caracteristica'],'danceability')
+    map_temp=mp.get(catalog['index_caracteristica'],'energy')
+    arbol_dance=me.getValue(map_dance)
+    arbol_temp=me.getValue(map_temp)
+    valores_dance=om.values(arbol_dance,dance_inf,dance_sup)
+    valores_temp=om.values(arbol_temp,temp_inf,temp_sup)
+    mapa_dance=lista_en_hash(valores_dance)
+    lista_musica=lt.newList('ARRAY_LIST')
+    for evento in lt.iterator(valores_temp):
+        if mp.contains(mapa_dance,evento['track_id']):
+            lt.addLast(lista_musica,evento)
+    lista_unica=mp.valueSet(pistas_unicas(lista_musica))
+    return lista_unica
+
 def musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup):
     map_inst=mp.get(catalog['index_caracteristica'],'instrumentalness')
     map_BPM=mp.get(catalog['index_caracteristica'],'tempo')

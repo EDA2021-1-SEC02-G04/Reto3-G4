@@ -118,7 +118,17 @@ while True:
         print('Numero de reproducciones:'+ str(resultado[2]))
         print('Cantidad de Autores:'+ str(resultado[3]))
     elif int(inputs[0]) == 4:
-        pass
+        
+        print("\nBuscando musica para festejar: ")
+        dance_inf =float(input("Ingrese el limite inferior de Danceability: "))
+        dance_sup =float(input("Ingrese el limite superior de Danceability: "))
+        temp_inf =float(input("Ingrese el limite inferior de Energy: "))
+        temp_sup =float(input("Ingrese el limite superior de Energy: "))
+        answer=controller.musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup)
+        print('La instrumentalidad está entre: ' +str(dance_inf)+' y '+str(dance_sup))
+        print('El tempo está entre: ' +str(temp_inf)+' y '+str(temp_sup))
+        print_estudiar(answer)
+
     elif int(inputs[0]) == 5:
         print("\nBuscando musica para estudiar: ")
         inst_inf =float(input("Ingrese el limite inferior de Instrumentalness: "))
