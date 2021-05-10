@@ -142,8 +142,9 @@ while True:
         answer=controller.musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup)
         print('La instrumentalidad está entre: ' +str(dance_inf)+' y '+str(dance_sup))
         print('El tempo está entre: ' +str(temp_inf)+' y '+str(temp_sup))
-        print_fiesta(answer)
-        print_estudiar(answer[0])
+        print_fiesta(answer[0])
+        
+        
         print("Tiempo [ms]: ", f"{answer[1]:.3f}", "  ||  ",
               "Memoria [kB]: ", f"{answer[2]:.3f}")
         
