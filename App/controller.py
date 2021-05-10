@@ -25,6 +25,8 @@ import model
 import csv
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
+import time
+import tracemalloc
 
 
 """
@@ -40,10 +42,24 @@ def init():
     return catalog
 # Funciones para la carga de datos
 def loadData(catalog):
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+
     loadEventos(catalog)
     loadGeneros(catalog)
     loadHashtag(catalog)
     model.llenar_arboles(catalog)
+
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
     print(mp.size(catalog['eventos']))
 
 def loadEventos(catalog):
@@ -62,7 +78,20 @@ def loadHashtag(catalog):
         model.poner_vader(catalog,hashtag)
 
 def rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup):
-    return model.rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup)
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    respuesta= model.rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return respuesta
 
 def loadGeneros(catalog):
     model.new_genero(catalog,'reggae',60,90)
@@ -76,21 +105,115 @@ def loadGeneros(catalog):
     model.new_genero(catalog,'metal',100,160)
 
 def nuevo_genero(catalog,genero,rango_inf,rango_sup):
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
     model.new_genero(catalog,genero,rango_inf,rango_sup)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
 
 def total_por_generos(catalog,lista_gen):
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
     lista_gen2=lista_gen.split(',')
-    return model.total_por_generos(catalog,lista_gen2)
+    respuesta=model.total_por_generos(catalog,lista_gen2)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return respuesta
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
 def musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup):
-    return model.musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup)
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    respuesta=model.musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return respuesta
 
 def musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup):
-    return model.musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup)
+    delta_time = -1.0
+    delta_memory = -1.0
 
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    respuesta=model.musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return respuesta
 
 def analisis_por_hora(catalog,tmin,tmax):
-    return model.analisis_por_hora(catalog,tmin,tmax)
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+    respuesta=model.analisis_por_hora(catalog,tmin,tmax)
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return respuesta
+
+# Funciones de tiempo y memoria
+
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+
+
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
+
+
+def deltaMemory(start_memory, stop_memory):
+    """
+    calcula la diferencia en memoria alocada del programa entre dos
+    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
+    """
+    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    delta_memory = 0.0
+
+    # suma de las diferencias en uso de memoria
+    for stat in memory_diff:
+        delta_memory = delta_memory + stat.size_diff
+    # de Byte -> kByte
+    delta_memory = delta_memory/1024.0
+    return delta_memory
