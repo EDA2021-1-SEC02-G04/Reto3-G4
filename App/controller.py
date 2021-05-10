@@ -60,7 +60,7 @@ def loadData(catalog):
 
     delta_time = stop_time - start_time
     delta_memory = deltaMemory(start_memory, stop_memory)
-    print(mp.size(catalog['eventos']))
+    return delta_time,delta_memory
 
 def loadEventos(catalog):
     eventosfile = cf.data_dir + 'context_content_features-small.csv'
@@ -91,7 +91,7 @@ def rango_caracteristica(catalog,caracteristica,rango_inf,rango_sup):
 
     delta_time = stop_time - start_time
     delta_memory = deltaMemory(start_memory, stop_memory)
-    return respuesta
+    return respuesta,delta_time,delta_memory
 
 def loadGeneros(catalog):
     model.new_genero(catalog,'reggae',60,90)
@@ -118,7 +118,7 @@ def nuevo_genero(catalog,genero,rango_inf,rango_sup):
 
     delta_time = stop_time - start_time
     delta_memory = deltaMemory(start_memory, stop_memory)
-
+    return delta_time,delta_memory
 def total_por_generos(catalog,lista_gen):
     delta_time = -1.0
     delta_memory = -1.0
@@ -134,7 +134,7 @@ def total_por_generos(catalog,lista_gen):
 
     delta_time = stop_time - start_time
     delta_memory = deltaMemory(start_memory, stop_memory)
-    return respuesta
+    return respuesta,delta_time,delta_memory
 
 # Funciones de ordenamiento
 
@@ -153,7 +153,7 @@ def musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup):
 
     delta_time = stop_time - start_time
     delta_memory = deltaMemory(start_memory, stop_memory)
-    return respuesta
+    return respuesta,delta_time,delta_memory
 
 def musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup):
     delta_time = -1.0
@@ -169,7 +169,7 @@ def musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup):
 
     delta_time = stop_time - start_time
     delta_memory = deltaMemory(start_memory, stop_memory)
-    return respuesta
+    return respuesta,delta_time,delta_memory
 
 def analisis_por_hora(catalog,tmin,tmax):
     delta_time = -1.0
@@ -185,7 +185,7 @@ def analisis_por_hora(catalog,tmin,tmax):
 
     delta_time = stop_time - start_time
     delta_memory = deltaMemory(start_memory, stop_memory)
-    return respuesta
+    return respuesta,delta_time,delta_memory
 
 # Funciones de tiempo y memoria
 
