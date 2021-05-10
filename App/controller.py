@@ -63,11 +63,11 @@ def loadData(catalog):
     return delta_time,delta_memory
 
 def loadEventos(catalog):
-    eventosfile = cf.data_dir + 'context_content_features-small.csv'
+    eventosfile = cf.data_dir + 'context_content_features-10pct.csv'
     input_file_eventos = csv.DictReader(open(eventosfile, encoding='utf-8'))
     for evento in input_file_eventos:
         model.addEvento(catalog,evento)
-    hastagfile = cf.data_dir + 'user_track_hashtag_timestamp-small.csv'
+    hastagfile = cf.data_dir + 'user_track_hashtag_timestamp-10pct.csv'
     input_file_hashtag = csv.DictReader(open(hastagfile, encoding='utf-8'))
     for evento in input_file_hashtag:
         model.hastags(catalog,evento)
