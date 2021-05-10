@@ -108,15 +108,20 @@ while True:
 
     elif int(inputs[0]) == 2:
         print("\nCargando información de eventos de escucha ....")
-        controller.loadData(catalog)
+        answer=controller.loadData(catalog)
+        print('Eventos cargados: ' + str(lt.size(catalog['eventos'])))
+        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{answer[1]:.3f}")
     elif int(inputs[0]) == 3:
         print("\nBuscando reprioducciónes por caracteristica: ")
         car = input("Ingrese la caracteristica de contenido: ").lower()
         rango_inf =float(input("Ingrese el limite inferior del rango de la caracteristica: "))
         rango_sup =float(input("Ingrese el limite superior del rango de la caracteristica: "))
         resultado= controller.rango_caracteristica(catalog,car,rango_inf,rango_sup)
-        print('Numero de reproducciones:'+ str(resultado[2]))
-        print('Cantidad de Autores:'+ str(resultado[3]))
+        print('Numero de reproducciones:'+ str(resultado[0][2]))
+        print('Cantidad de Autores:'+ str(resultado[0][3]))
+        print("Tiempo [ms]: ", f"{resultado[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{resultado[2]:.3f}")
     elif int(inputs[0]) == 4:
         
         print("\nBuscando musica para festejar: ")
@@ -127,7 +132,10 @@ while True:
         answer=controller.musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup)
         print('La instrumentalidad está entre: ' +str(dance_inf)+' y '+str(dance_sup))
         print('El tempo está entre: ' +str(temp_inf)+' y '+str(temp_sup))
-        print_estudiar(answer)
+        print_estudiar(answer[0])
+        print("Tiempo [ms]: ", f"{answer[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{answer[2]:.3f}")
+        
 
     elif int(inputs[0]) == 5:
         print("\nBuscando musica para estudiar: ")
@@ -138,26 +146,34 @@ while True:
         answer=controller.musica_estudiar(catalog,inst_inf,inst_sup,BPM_inf,BPM_sup)
         print('La instrumentalidad está entre: ' +str(inst_inf)+' y '+str(inst_sup))
         print('El tempo está entre: ' +str(BPM_inf)+' y '+str(BPM_sup))
-        print_estudiar(answer)
+        print_estudiar(answer[0])
+        print("Tiempo [ms]: ", f"{answer[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{answer[2]:.3f}")
     elif int(inputs[0]) == 6:
         print("\nCreando nuevo genero: ")
         genero = input("Ingrese el nombre de su nuevo genero: ").lower()
         rango_inf =float(input("Ingrese el limite inferior de BPM: "))
         rango_sup =float(input("Ingrese el limite superior de BPM: "))
-        controller.nuevo_genero(catalog,genero,rango_inf,rango_sup)
+        answer=controller.nuevo_genero(catalog,genero,rango_inf,rango_sup)
         print("Se creó su nuevo genero")
+        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{answer[1]:.3f}")
     elif int(inputs[0]) == 7:
         print("\nBuscando por genero: ")
         generos = input("Ingrese los generos separados por ,: ").lower()
         resultado=controller.total_por_generos(catalog,generos)
-        print("Total de reproducciónes:" +str(resultado[0]))
-        print_generos(resultado)
+        print("Total de reproducciónes:" +str(resultado[0][0]))
+        print_generos(resultado[0])
+        print("Tiempo [ms]: ", f"{resultado[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{resultado[2]:.3f}")
     elif int(inputs[0]) == 8:
         print("\nBuscando por hora: ")
         tmin = input("Ingrese el tiempo inicial: ")
         tmax=  input("Ingrese el tiempo final: ")
         resultado=controller.analisis_por_hora(catalog,tmin,tmax)
-        print_horas(resultado,tmin,tmax)
+        print_horas(resultado[0],tmin,tmax)
+        print("Tiempo [ms]: ", f"{resultado[1]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{resultado[2]:.3f}")
     else:
         sys.exit(0)
 sys.exit(0)
