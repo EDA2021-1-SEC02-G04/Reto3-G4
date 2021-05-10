@@ -78,6 +78,17 @@ def print_estudiar(respuesta):
         print('Pista '+str(i)+': '+ str(pista['track_id'])+' con instrumentalidad '+str(pista['instrumentalness'])+' y tempo '+str(pista['tempo']))
         i+=1
 
+def print_fiesta(respuesta):
+    total=lt.size(respuesta)
+    print('En total hay: '+str(total)+' pistas unicas con las caracteristicas ingresadas')
+    print('------Pistas únicas------')
+    i=1
+    while i<=5 and i<=lt.size(respuesta):
+        numero_pista=random.randint(1, lt.size(respuesta))
+        pista=lt.getElement(respuesta,numero_pista)
+        print('Pista '+str(i)+': '+ str(pista['track_id'])+' con Energy '+str(pista['energy'])+' y Danceability '+str(pista['danceability']))
+        i+=1
+
 def print_horas(respuesta,tmin,tmax):
     print('En total hay: '+str(respuesta[4])+' reproducciones entre '+str(tmin)+' y '+str(tmax))
     print('\n============ GENEROS SORTEADOS POR REPRODUCCIONES ============')
@@ -118,7 +129,6 @@ while True:
         print('Numero de reproducciones:'+ str(resultado[2]))
         print('Cantidad de Autores:'+ str(resultado[3]))
     elif int(inputs[0]) == 4:
-        
         print("\nBuscando musica para festejar: ")
         dance_inf =float(input("Ingrese el limite inferior de Danceability: "))
         dance_sup =float(input("Ingrese el limite superior de Danceability: "))
@@ -127,7 +137,7 @@ while True:
         answer=controller.musica_festejar(catalog,dance_inf,dance_sup,temp_inf,temp_sup)
         print('La instrumentalidad está entre: ' +str(dance_inf)+' y '+str(dance_sup))
         print('El tempo está entre: ' +str(temp_inf)+' y '+str(temp_sup))
-        print_estudiar(answer)
+        print_fiesta(answer)
 
     elif int(inputs[0]) == 5:
         print("\nBuscando musica para estudiar: ")
